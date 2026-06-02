@@ -7,6 +7,8 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relationship\HasMany;
+use Illuminate\Database\Eloquent\Relationship\HasOne;
 
 class User extends Authenticatable
 {
@@ -38,5 +40,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationship
+    public function trainingRegistrations(): HasMany
+    {
+        return $this->hasMany(TrainingRegistration::class);
+    }
+
+    public function points(): HasMany
+    {
+        return $this->hasMany(Point::class);
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    public function upline(): HasOne
+    {
+        return $this->hasOne(Referral::class, 'referred_id');
     }
 }

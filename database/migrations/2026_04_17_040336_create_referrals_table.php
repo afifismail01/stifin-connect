@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('referrals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('referrer_id')->constrained('users')->cascadeOnDelete();
-            $table->foreginId('referred_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('referred_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

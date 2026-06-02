@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relationship\BelongsTo;
+
+class Point extends Model
+{
+    protected $fillable = ['user_id', 'source_user_id', 'points', 'description'];
+
+    // Relationship
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function sourceUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'source_user_id');
+    }
+}
