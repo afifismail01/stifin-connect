@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relationship\BelongsTo;
+use App\Enums\RegistrationStatusEnum;
 
 class TrainingRegistration extends Model
 {
     protected $fillable = ['user_id', 'training_id', 'status'];
+    protected function cast(): array
+    {
+        return ['status' => RegistrationStatusEnum::class];
+    }
 
     //relationship
     public function training(): BelongsTo

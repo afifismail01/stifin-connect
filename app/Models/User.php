@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relationship\HasMany;
 use Illuminate\Database\Eloquent\Relationship\HasOne;
+use App\Enums\UserRoleEnum;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = ['name', 'email', 'password', 'role', 'referral_code'];
+
+    protected function cast(): array
+    {
+        return ['role' => UserRoleEnum::class];
+    }
 
     /**
      * The attributes that should be hidden for serialization.
