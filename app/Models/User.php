@@ -23,11 +23,6 @@ class User extends Authenticatable
      */
     protected $fillable = ['name', 'email', 'password', 'role', 'referral_code'];
 
-    protected function cast(): array
-    {
-        return ['role' => UserRoleEnum::class];
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,6 +40,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRoleEnum::class,
         ];
     }
 

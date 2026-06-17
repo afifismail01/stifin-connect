@@ -9,7 +9,7 @@ use App\Enums\RegistrationStatusEnum;
 class TrainingRegistration extends Model
 {
     protected $fillable = ['user_id', 'training_id', 'status'];
-    protected function cast(): array
+    protected function casts(): array
     {
         return ['status' => RegistrationStatusEnum::class];
     }
