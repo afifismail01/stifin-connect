@@ -55,7 +55,7 @@ class User extends Authenticatable
         return $this->hasMany(Point::class);
     }
 
-    public function referrals(): HasMany
+    public function downlines(): HasMany
     {
         return $this->hasMany(Referral::class, 'referrer_id');
     }
