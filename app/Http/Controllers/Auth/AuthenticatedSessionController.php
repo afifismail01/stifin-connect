@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Enums\UserRoleEnum;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,7 +29,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        return match ($user->role) {
+            UserRoleEnum::ADMIN => redirect()->route('admin.dashboard'),
+            UserRoleEnum::MITRA => redirect()->route('mitra.dashboard'),
+            UserRoleEnum::PESERTA => redirect()->route('peserta.dashboard'),
+        };
     }
 
     /**
