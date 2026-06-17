@@ -1,35 +1,55 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SuperAdmin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::view('/admin/dashboard', 'admin.dashboard')
-        ->name('admin.dashboard');
+    // Dashboard berdasarkan role
+    Route::get('/dashboard', [
+        DashboardController::class,
+        'index'
+    ])->name('dashboard');
+
+    // Profile
+    Route::get('/profile', [
+        ProfileController::class,
+        'edit'
+    ])->name('profile.edit');
+
+    Route::patch('/profile', [
+        ProfileController::class,
+        'update'
+    ])->name('profile.update');
+
+    Route::delete('/profile', [
+        ProfileController::class,
+        'destroy'
+    ])->name('profile.destroy');
+
 });
 
-Route::middleware(['auth', 'role:mitra'])->group(function () {
-    Route::view('/mitra/dashboard', 'mitra.dashboard')
-        ->name('mitra.dashboard');
-});
+Route::middleware([
+    'auth',
+    'super-admin'
+])->group(function () {
 
-Route::middleware(['auth', 'role:peserta'])->group(function () {
-    Route::view('/peserta/dashboard', 'peserta.dashboard')
-        ->name('peserta.dashboard');
-});
+    Route::get(
+        '/super-admin/users',
+        [UserController::class, 'index']
+    )->name('super-admin.users');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch(
+        '/super-admin/users/{user}/role',
+        [UserController::class, 'updateRole']
+    )->name('super-admin.users.role');
+
 });
 
 require __DIR__.'/auth.php';

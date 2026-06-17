@@ -11,10 +11,20 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('referrals', function (Blueprint $table) {
+
             $table->id();
-            $table->foreignId('referrer_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('referred_id')->constrained('users')->cascadeOnDelete();
+
+            $table->foreignId('referrer_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('referred_id')
+                ->unique()
+                ->constrained('users')
+                ->cascadeOnDelete();
+
             $table->timestamps();
+
         });
     }
 
