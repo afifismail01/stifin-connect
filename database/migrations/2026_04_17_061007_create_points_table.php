@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('source_user_id')->nullable()->constrained('users')->cascadeOnDelete();
-            $table->integer('points');
+            $table->decimal('points', 8, 2);
             $table->text('description')->nullable();
             $table->timestamps();
         });

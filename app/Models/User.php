@@ -2,39 +2,31 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relationship\HasMany;
-use Illuminate\Database\Eloquent\Relationship\HasOne;
 use App\Enums\UserRoleEnum;
+use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = ['name', 'email', 'password', 'role', 'referral_code'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'referral_code',
+    ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -44,24 +36,126 @@ class User extends Authenticatable
         ];
     }
 
-    // Relationship
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
     public function trainingRegistrations(): HasMany
     {
-        return $this->hasMany(TrainingRegistration::class);
+        return $this->hasMany(
+            TrainingRegistration::class
+        );
     }
 
     public function points(): HasMany
     {
-        return $this->hasMany(Point::class);
+        return $this->hasMany(
+            Point::class
+        );
     }
 
+    /**
+     * User yang direkrut oleh user ini
+     */
     public function downlines(): HasMany
     {
-        return $this->hasMany(Referral::class, 'referrer_id');
+        return $this->hasMany(
+            Referral::class,
+            'referrer_id'
+        );
     }
 
+    /**
+     * User yang merekrut user ini
+     */
     public function upline(): HasOne
     {
-        return $this->hasOne(Referral::class, 'referred_id');
+        return $this->hasOne(
+            Referral::class,
+            'referred_id'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Role Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRoleEnum::SUPER_ADMIN;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRoleEnum::ADMIN;
+    }
+
+    public function isMitra(): bool
+    {
+        return $this->role === UserRoleEnum::MITRA;
+    }
+
+    public function isPeserta(): bool
+    {
+        return $this->role === UserRoleEnum::PESERTA;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Referral Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    public function referralsCount(): int
+    {
+        return $this->downlines()->count();
+    }
+
+    public function totalPoints(): float
+    {
+        return (float) $this->points()->sum('points');
+    }
+
+    /**
+     * Ambil user yang merekrut user ini
+     */
+    public function referrerUser(): ?User
+    {
+        return $this->upline?->referrer;
+    }
+
+    /**
+     * Ambil semua user yang direkrut user ini
+     */
+    public function referredUsers()
+    {
+        return $this->downlines()
+            ->with('referred');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Referral Generator
+    |--------------------------------------------------------------------------
+    */
+
+    public static function generateReferralCode(): string
+    {
+        do {
+            $code = 'STF-' . strtoupper(
+                Str::random(6)
+            );
+        } while (
+            self::where(
+                'referral_code',
+                $code
+            )->exists()
+        );
+
+        return $code;
     }
 }

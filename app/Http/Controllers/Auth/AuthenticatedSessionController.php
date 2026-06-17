@@ -31,11 +31,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        return match ($user->role) {
-            UserRoleEnum::ADMIN => redirect()->route('admin.dashboard'),
-            UserRoleEnum::MITRA => redirect()->route('mitra.dashboard'),
-            UserRoleEnum::PESERTA => redirect()->route('peserta.dashboard'),
-        };
+       return redirect()->route('dashboard');
     }
 
     /**

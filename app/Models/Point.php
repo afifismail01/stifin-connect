@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relationship\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Point extends Model
 {
