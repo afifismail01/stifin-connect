@@ -14,6 +14,19 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        $admins = User::where(
+            'role',
+            UserRoleEnum::ADMIN
+        )
+            ->with([
+                'downlines.referred'
+            ])
+            ->withCount([
+                'directMitras',
+                'directPesertas'
+            ])
+            ->get();
+
         return match ($user->role) {
 
             /*
@@ -24,6 +37,19 @@ class DashboardController extends Controller
             UserRoleEnum::SUPER_ADMIN => view(
                 'dashboard.super-admin',
                 [
+                    'admins' => User::where(
+                        'role',
+                        UserRoleEnum::ADMIN
+                    )
+                    ->with([
+                        'downlines.referred'
+                    ])
+                    ->withCount([
+                        'directMitras',
+                        'directPesertas'
+                    ])
+                    ->get(),
+
                     'totalAdmin' => User::where(
                         'role',
                         UserRoleEnum::ADMIN
@@ -97,6 +123,7 @@ class DashboardController extends Controller
                         ->get(),
                 ]
             ),
+
             /*
             |--------------------------------------------------------------------------
             | MITRA
@@ -110,8 +137,7 @@ class DashboardController extends Controller
                     'totalPoint' => $user->totalPoints(),
 
                     'referralLink' => url(
-                        '/register?ref=' .
-                        $user->referral_code
+                        '/register?ref=' . $user->referral_code
                     ),
 
                     'downlines' => $user->downlines()
@@ -125,7 +151,11 @@ class DashboardController extends Controller
                         ->take(10)
                         ->get(),
 
-                    'upline' => optional($user->upline)->referrer,
+                    'upline' => optional(
+                        $user->upline()
+                            ->with('referrer')
+                            ->first()
+                    )->referrer,
                 ]
             ),
 
