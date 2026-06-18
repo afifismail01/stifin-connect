@@ -14,162 +14,83 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        $admins = User::where(
-            'role',
-            UserRoleEnum::ADMIN
-        )
-            ->with([
-                'downlines.referred'
-            ])
-            ->withCount([
-                'directMitras',
-                'directPesertas'
-            ])
+        $admins = User::where('role', UserRoleEnum::ADMIN)
+            ->with(['downlines.referred'])
+            ->withCount(['directMitras', 'directPesertas'])
             ->get();
 
         return match ($user->role) {
-
             /*
             |--------------------------------------------------------------------------
             | SUPER ADMIN
             |--------------------------------------------------------------------------
             */
-            UserRoleEnum::SUPER_ADMIN => view(
-                'dashboard.super-admin',
-                [
-                    'admins' => User::where(
-                        'role',
-                        UserRoleEnum::ADMIN
-                    )
-                    ->with([
-                        'downlines.referred'
-                    ])
-                    ->withCount([
-                        'directMitras',
-                        'directPesertas'
-                    ])
+            UserRoleEnum::SUPER_ADMIN => view('dashboard.super-admin', [
+                'admins' => User::where('role', UserRoleEnum::ADMIN)
+                    ->with(['downlines.referred'])
+                    ->withCount(['directMitras', 'directPesertas'])
                     ->get(),
 
-                    'totalAdmin' => User::where(
-                        'role',
-                        UserRoleEnum::ADMIN
-                    )->count(),
+                'totalAdmin' => User::where('role', UserRoleEnum::ADMIN)->count(),
 
-                    'totalMitra' => User::where(
-                        'role',
-                        UserRoleEnum::MITRA
-                    )->count(),
+                'totalMitra' => User::where('role', UserRoleEnum::MITRA)->count(),
 
-                    'totalPeserta' => User::where(
-                        'role',
-                        UserRoleEnum::PESERTA
-                    )->count(),
+                'totalPeserta' => User::where('role', UserRoleEnum::PESERTA)->count(),
 
-                    'totalReferral' => Referral::count(),
+                'totalReferral' => Referral::count(),
 
-                    'totalPoint' => Point::sum('points'),
+                'totalPoint' => Point::sum('points'),
 
-                    'latestUsers' => User::latest()
-                        ->take(5)
-                        ->get(),
-                ]
-            ),
-
+                'latestUsers' => User::latest()->take(5)->get(),
+            ]),
             /*
             |--------------------------------------------------------------------------
             | ADMIN
             |--------------------------------------------------------------------------
             */
-            UserRoleEnum::ADMIN => view(
-                'dashboard.admin',
-                [
-                    'totalMitra' => User::where(
-                        'role',
-                        UserRoleEnum::MITRA
-                    )->count(),
+            UserRoleEnum::ADMIN => view('dashboard.admin', [
+                'totalMitra' => User::where('role', UserRoleEnum::MITRA)->count(),
 
-                    'totalPeserta' => User::where(
-                        'role',
-                        UserRoleEnum::PESERTA
-                    )->count(),
+                'totalPeserta' => User::where('role', UserRoleEnum::PESERTA)->count(),
 
-                    'totalReferral' => Referral::count(),
+                'totalReferral' => Referral::count(),
 
-                    'totalPoint' => $user->totalPoints(),
+                'totalPoint' => $user->totalPoints(),
 
-                    'referralLink' => url(
-                        '/register?ref=' . $user->referral_code
-                    ),
+                'referralLink' => url('/register?ref=' . $user->referral_code),
 
-                    'pointHistories' => $user->points()
-                        ->with('sourceUser')
-                        ->latest()
-                        ->take(10)
-                        ->get(),
+                'pointHistories' => $user->points()->with('sourceUser')->latest()->take(10)->get(),
 
-                    'mitras' => User::where(
-                        'role',
-                        UserRoleEnum::MITRA
-                    )
-                        ->withCount('downlines')
-                        ->latest()
-                        ->get(),
+                'mitras' => User::where('role', UserRoleEnum::MITRA)->withCount('downlines')->latest()->get(),
 
-                    'pesertas' => User::where(
-                        'role',
-                        UserRoleEnum::PESERTA
-                    )
-                        ->latest()
-                        ->get(),
-                ]
-            ),
-
+                'pesertas' => User::where('role', UserRoleEnum::PESERTA)->latest()->get(),
+            ]),
             /*
             |--------------------------------------------------------------------------
             | MITRA
             |--------------------------------------------------------------------------
             */
-            UserRoleEnum::MITRA => view(
-                'dashboard.mitra',
-                [
-                    'user' => $user,
+            UserRoleEnum::MITRA => view('dashboard.mitra', [
+                'user' => $user,
 
-                    'totalPoint' => $user->totalPoints(),
+                'totalPoint' => $user->totalPoints(),
 
-                    'referralLink' => url(
-                        '/register?ref=' . $user->referral_code
-                    ),
+                'referralLink' => url('/register?ref=' . $user->referral_code),
 
-                    'downlines' => $user->downlines()
-                        ->with('referred')
-                        ->latest()
-                        ->get(),
+                'downlines' => $user->downlines()->with('referred')->latest()->get(),
 
-                    'pointHistories' => Point::with('sourceUser')
-                        ->where('user_id', $user->id)
-                        ->latest()
-                        ->take(10)
-                        ->get(),
+                'pointHistories' => Point::with('sourceUser')->where('user_id', $user->id)->latest()->take(10)->get(),
 
-                    'upline' => optional(
-                        $user->upline()
-                            ->with('referrer')
-                            ->first()
-                    )->referrer,
-                ]
-            ),
-
+                'upline' => optional($user->upline()->with('referrer')->first())->referrer,
+            ]),
             /*
             |--------------------------------------------------------------------------
             | PESERTA
             |--------------------------------------------------------------------------
             */
-            UserRoleEnum::PESERTA => view(
-                'dashboard.peserta',
-                [
-                    'user' => $user,
-                ]
-            ),
+            UserRoleEnum::PESERTA => view('dashboard.peserta', [
+                'user' => $user,
+            ]),
         };
     }
 }
