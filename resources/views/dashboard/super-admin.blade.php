@@ -54,7 +54,7 @@
 
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500">
                     <p class="text-gray-500 text-sm">
-                        Total Point
+                        Total Point Sistem
                     </p>
 
                     <h3 class="text-3xl font-bold text-red-600 mt-2">
@@ -62,10 +62,12 @@
                     </h3>
                 </div>
 
+            {{-- Referral Link --}}
+
             </div>
 
             {{-- Menu Cepat --}}
-            <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
 
                 <a
                     href="{{ route('super-admin.users') }}"
@@ -77,6 +79,19 @@
 
                     <p class="mt-2 text-sm opacity-90">
                         Kelola role Admin, Mitra, dan Peserta.
+                    </p>
+                </a>
+
+                <a
+                    href="{{ route('super-admin.point-report') }}"
+                    class="bg-green-600 hover:bg-green-700 transition text-white rounded-xl p-6 shadow"
+                >
+                    <h3 class="font-bold text-lg">
+                        Laporan Point
+                    </h3>
+
+                    <p class="mt-2 text-sm opacity-90">
+                        Monitoring seluruh point sistem
                     </p>
                 </a>
 
@@ -102,6 +117,109 @@
 
             </div>
 
+            {{-- Laporan Jaringan Admin --}}
+            <div class="bg-white rounded-xl shadow-sm mb-8">
+
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-bold">
+                        Laporan Jaringan Admin
+                    </h3>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Monitoring hubungan Admin → Mitra → Peserta
+                    </p>
+                </div>
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full">
+
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left">
+                                    Admin
+                                </th>
+
+                                <th class="px-6 py-3 text-left">
+                                    Email
+                                </th>
+
+                                <th class="px-6 py-3 text-center">
+                                    Total Mitra
+                                </th>
+
+                                <th class="px-6 py-3 text-center">
+                                    Peserta Langsung
+                                </th>
+
+                                <th class="px-6 py-3 text-center">
+                                    Total Network
+                                </th>
+
+                                <th class="px-6 py-3 text-center">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @forelse($admins as $admin)
+
+                                <tr class="border-b hover:bg-gray-50">
+
+                                    <td class="px-6 py-4">
+                                        {{ $admin->name }}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        {{ $admin->email }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center">
+                                        {{ $admin->direct_mitras_count }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center">
+                                        {{ $admin->direct_pesertas_count }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center font-semibold">
+                                        {{ $admin->totalNetworkCount() }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center">
+                                      <a
+                                        href="{{ route('super-admin.network.show', $admin->id) }}"
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+                                    >
+                                        Detail
+                                    </a>
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+                                    <td
+                                        colspan="5"
+                                        class="px-6 py-8 text-center text-gray-500"
+                                    >
+                                        Belum ada data admin
+                                    </td>
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
             {{-- User Terbaru --}}
             <div class="bg-white rounded-xl shadow-sm">
 
@@ -116,9 +234,7 @@
                     <table class="w-full">
 
                         <thead class="bg-gray-50">
-
                             <tr>
-
                                 <th class="text-left px-6 py-3">
                                     Nama
                                 </th>
@@ -130,9 +246,7 @@
                                 <th class="text-left px-6 py-3">
                                     Role
                                 </th>
-
                             </tr>
-
                         </thead>
 
                         <tbody>
@@ -150,28 +264,7 @@
                                     </td>
 
                                     <td class="px-6 py-4">
-
-                                        @if($user->role->value === 'super_admin')
-                                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
-                                                Super Admin
-                                            </span>
-
-                                        @elseif($user->role->value === 'admin')
-                                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
-                                                Admin
-                                            </span>
-
-                                        @elseif($user->role->value === 'mitra')
-                                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
-                                                Mitra
-                                            </span>
-
-                                        @else
-                                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                                                Peserta
-                                            </span>
-                                        @endif
-
+                                        {{ ucfirst(str_replace('_', ' ', $user->role->value)) }}
                                     </td>
 
                                 </tr>

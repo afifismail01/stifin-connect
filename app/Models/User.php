@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Enums\UserRoleEnum;
 use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
@@ -121,15 +122,47 @@ class User extends Authenticatable
     }
 
     /**
-     * Ambil user yang merekrut user ini
+     * Mitra langsung milik Admin
      */
-    public function referrerUser(): ?User
+    public function directMitras()
     {
-        return $this->upline?->referrer;
+        return $this->downlines()
+            ->whereHas(
+                'referred',
+                fn ($q) => $q->where(
+                    'role',
+                    UserRoleEnum::MITRA
+                )
+            );
     }
 
     /**
-     * Ambil semua user yang direkrut user ini
+     * Peserta langsung milik Admin
+     */
+    public function directPesertas()
+    {
+        return $this->downlines()
+            ->whereHas(
+                'referred',
+                fn ($q) => $q->where(
+                    'role',
+                    UserRoleEnum::PESERTA
+                )
+            );
+    }
+
+    /**
+     * User yang merekrut user ini
+     */
+    public function referrerUser(): ?User
+    {
+        return $this->upline()
+            ->with('referrer')
+            ->first()?->referrer;
+    }
+
+    /**
+     * Semua user yang direkrut
      */
     public function referredUsers()
     {
@@ -157,5 +190,57 @@ class User extends Authenticatable
         );
 
         return $code;
+    }
+
+    public function totalNetworkCount(): int
+    {
+        $count = 0;
+
+        foreach ($this->downlines as $referral) {
+
+            $downline = $referral->referred;
+
+            if (! $downline) {
+                continue;
+            }
+
+            $count++;
+
+            if ($downline->isMitra()) {
+                $count += $downline->downlines()->count();
+            }
+        }
+
+        return $count;
+    }
+
+    public function networkTree(): array
+    {
+        $tree = [];
+
+        foreach ($this->downlines as $referral) {
+
+            $downline = $referral->referred;
+
+            if (!$downline) {
+                continue;
+            }
+
+            $children = [];
+
+            foreach ($downline->downlines as $childReferral) {
+
+                if ($childReferral->referred) {
+                    $children[] = $childReferral->referred;
+                }
+            }
+
+            $tree[] = [
+                'user' => $downline,
+                'children' => $children,
+            ];
+        }
+
+        return $tree;
     }
 }

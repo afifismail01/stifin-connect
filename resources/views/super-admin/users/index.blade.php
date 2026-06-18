@@ -167,7 +167,7 @@
                                             <form
                                                 method="POST"
                                                 action="{{ route('super-admin.users.role', $user) }}"
-                                                class="flex items-center gap-2"
+                                                class="flex items-center gap-2 flex-wrap"
                                             >
 
                                                 @csrf
@@ -207,6 +207,20 @@
                                                 >
                                                     Update
                                                 </button>
+
+                                                <a
+                                                    href="{{ route('super-admin.network.show', $user->id) }}"
+                                                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm"
+                                                >
+                                                    Network
+                                                </a>
+                                            
+                                                <a
+                                                    href="{{ route('super-admin.user.points', $user->id) }}"
+                                                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm"
+                                                >
+                                                    Point
+                                                </a>
 
                                             </form>
 
