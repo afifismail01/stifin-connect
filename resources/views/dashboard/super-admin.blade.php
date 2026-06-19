@@ -34,11 +34,11 @@
 
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
                     <p class="text-gray-500 text-sm">
-                        Total Peserta
+                        Total Promotor
                     </p>
 
                     <h3 class="text-3xl font-bold text-green-600 mt-2">
-                        {{ $totalPeserta }}
+                        {{ $totalPromotor }}
                     </h3>
                 </div>
 
@@ -78,7 +78,7 @@
                     </h3>
 
                     <p class="mt-2 text-sm opacity-90">
-                        Kelola role Admin, Mitra, dan Peserta.
+                        Kelola role Admin, Mitra, dan Promotor.
                     </p>
                 </a>
 
@@ -111,7 +111,7 @@
                     </h3>
 
                     <p class="text-3xl font-bold mt-2">
-                        {{ $totalAdmin + $totalMitra + $totalPeserta }}
+                        {{ $totalAdmin + $totalMitra + $totalPromotor }}
                     </p>
                 </div>
 
@@ -126,7 +126,7 @@
                     </h3>
 
                     <p class="text-sm text-gray-500 mt-1">
-                        Monitoring hubungan Admin → Mitra → Peserta
+                        Monitoring hubungan Admin → Mitra → Promotor
                     </p>
                 </div>
 
@@ -149,7 +149,7 @@
                                 </th>
 
                                 <th class="px-6 py-3 text-center">
-                                    Peserta Langsung
+                                    Promotor Langsung
                                 </th>
 
                                 <th class="px-6 py-3 text-center">
@@ -181,7 +181,7 @@
                                     </td>
 
                                     <td class="px-6 py-4 text-center">
-                                        {{ $admin->direct_pesertas_count }}
+                                        {{ $admin->direct_promotors_count }}
                                     </td>
 
                                     <td class="px-6 py-4 text-center font-semibold">

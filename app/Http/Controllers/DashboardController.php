@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         $admins = User::where('role', UserRoleEnum::ADMIN)
             ->with(['downlines.referred'])
-            ->withCount(['directMitras', 'directPesertas'])
+            ->withCount(['directMitras', 'directPromotors'])
             ->get();
 
         return match ($user->role) {
@@ -28,14 +28,14 @@ class DashboardController extends Controller
             UserRoleEnum::SUPER_ADMIN => view('dashboard.super-admin', [
                 'admins' => User::where('role', UserRoleEnum::ADMIN)
                     ->with(['downlines.referred'])
-                    ->withCount(['directMitras', 'directPesertas'])
+                    ->withCount(['directMitras', 'directPromotors'])
                     ->get(),
 
                 'totalAdmin' => User::where('role', UserRoleEnum::ADMIN)->count(),
 
                 'totalMitra' => User::where('role', UserRoleEnum::MITRA)->count(),
 
-                'totalPeserta' => User::where('role', UserRoleEnum::PESERTA)->count(),
+                'totalPromotor' => User::where('role', UserRoleEnum::PROMOTOR)->count(),
 
                 'totalReferral' => Referral::count(),
 
@@ -51,7 +51,7 @@ class DashboardController extends Controller
             UserRoleEnum::ADMIN => view('dashboard.admin', [
                 'totalMitra' => User::where('role', UserRoleEnum::MITRA)->count(),
 
-                'totalPeserta' => User::where('role', UserRoleEnum::PESERTA)->count(),
+                'totalPromotor' => User::where('role', UserRoleEnum::PROMOTOR)->count(),
 
                 'totalReferral' => Referral::count(),
 
@@ -63,7 +63,7 @@ class DashboardController extends Controller
 
                 'mitras' => User::where('role', UserRoleEnum::MITRA)->withCount('downlines')->latest()->get(),
 
-                'pesertas' => User::where('role', UserRoleEnum::PESERTA)->latest()->get(),
+                'promotors' => User::where('role', UserRoleEnum::PROMOTOR)->latest()->get(),
             ]),
             /*
             |--------------------------------------------------------------------------
@@ -85,10 +85,10 @@ class DashboardController extends Controller
             ]),
             /*
             |--------------------------------------------------------------------------
-            | PESERTA
+            | PROMOTOR
             |--------------------------------------------------------------------------
             */
-            UserRoleEnum::PESERTA => view('dashboard.peserta', [
+            UserRoleEnum::PROMOTOR => view('dashboard.promotor', [
                 'user' => $user,
             ]),
         };

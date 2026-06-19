@@ -36,11 +36,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Peserta Test',
-            'email' => 'peserta@test.com',
+            'name' => 'Promotor Test',
+            'email' => 'promotor@test.com',
             'password' => Hash::make('password'),
-            'role' => UserRoleEnum::PESERTA,
-            'referral_code' => 'PESERTA001',
+            'role' => UserRoleEnum::PROMOTOR,
+            'referral_code' => 'PROMOTOR001',
         ]);
     }
 }
