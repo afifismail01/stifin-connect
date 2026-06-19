@@ -36,31 +36,13 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255'
-            ],
+            'name' => ['required', 'string', 'max:255'],
 
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                'unique:' . User::class,
-            ],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
 
-            'password' => [
-                'required',
-                'confirmed',
-                Rules\Password::defaults(),
-            ],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
-            'referrer_code' => [
-                'nullable',
-                'exists:users,referral_code',
-            ],
+            'referrer_code' => ['nullable', 'exists:users,referral_code'],
         ]);
 
         // Buat user baru sebagai peserta
@@ -74,14 +56,9 @@ class RegisteredUserController extends Controller
 
         // Jika registrasi menggunakan referral
         if ($request->filled('referrer_code')) {
-
-            $upline = User::where(
-                'referral_code',
-                $request->referrer_code
-            )->first();
+            $upline = User::where('referral_code', $request->referrer_code)->first();
 
             if ($upline) {
-
                 // Simpan relasi referral
                 Referral::create([
                     'referrer_id' => $upline->id,
@@ -103,7 +80,6 @@ class RegisteredUserController extends Controller
 
                 // ADMIN merekrut peserta langsung
                 if ($upline->role === UserRoleEnum::ADMIN) {
-
                     Point::create([
                         'user_id' => $upline->id,
                         'source_user_id' => $user->id,
@@ -114,7 +90,6 @@ class RegisteredUserController extends Controller
 
                 // MITRA merekrut peserta
                 elseif ($upline->role === UserRoleEnum::MITRA) {
-
                     // Mitra dapat 0.5
                     Point::create([
                         'user_id' => $upline->id,
@@ -127,16 +102,9 @@ class RegisteredUserController extends Controller
                     $adminReferral = $upline->upline;
 
                     if ($adminReferral) {
+                        $admin = User::find($adminReferral->referrer_id);
 
-                        $admin = User::find(
-                            $adminReferral->referrer_id
-                        );
-
-                        if (
-                            $admin &&
-                            $admin->role === UserRoleEnum::ADMIN
-                        ) {
-
+                        if ($admin && $admin->role === UserRoleEnum::ADMIN) {
                             Point::create([
                                 'user_id' => $admin->id,
                                 'source_user_id' => $user->id,
