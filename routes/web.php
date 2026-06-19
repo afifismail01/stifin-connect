@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NetworkReportController;
 use App\Http\Controllers\PointReportController;
 use App\Http\Controllers\UserPointController;
-
+use App\Http\Controllers\SuperAdmin\TrainingController;
+use App\Http\Controllers\SuperAdmin\TrainingRegistrationController;
 
 
 Route::get('/', function () {
@@ -69,6 +70,16 @@ Route::middleware([
         '/super-admin/users/{user}/role',
         [UserController::class, 'updateRole']
     )->name('super-admin.users.role');
+
+    Route::resource(
+        'trainings',
+        TrainingController::class
+    );
+
+    Route::get(
+        '/training-registrations',
+        [TrainingRegistrationController::class, 'index']
+    )->name('training-registrations.index');
 
 });
 
