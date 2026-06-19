@@ -53,7 +53,7 @@ class UserController extends Controller
         $request->validate([
             'role' => [
                 'required',
-                'in:admin,mitra,peserta',
+                'in:admin,mitra,promotor',
             ],
         ]);
 

@@ -35,11 +35,11 @@
 
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
                     <p class="text-gray-500 text-sm">
-                        Peserta Langsung
+                        Promotor Langsung
                     </p>
 
                     <h3 class="text-3xl font-bold text-green-600 mt-2">
-                        {{ $admin->direct_pesertas_count }}
+                        {{ $admin->direct_promotors_count }}
                     </h3>
                 </div>
 
@@ -64,7 +64,7 @@
                     </h3>
 
                     <p class="text-sm text-gray-500 mt-1">
-                        Hubungan Admin → Mitra → Peserta
+                        Hubungan Admin → Mitra → Promotor
                     </p>
                 </div>
 
@@ -104,7 +104,7 @@
                                     @empty
 
                                         <div class="ml-6 text-gray-400">
-                                            Belum memiliki peserta
+                                            Belum memiliki promotor
                                         </div>
 
                                     @endforelse
@@ -113,7 +113,7 @@
 
                             @else
 
-                                {{-- PESERTA LANGSUNG ADMIN --}}
+                                {{-- PROMOTOR LANGSUNG ADMIN --}}
                                 <div class="border rounded-xl p-4 mb-3 bg-green-50">
 
                                     <div class="font-semibold text-green-700">
@@ -121,7 +121,7 @@
                                     </div>
 
                                     <div class="text-sm text-gray-500">
-                                        Peserta Langsung Admin
+                                        Promotor Langsung Admin
                                     </div>
 
                                 </div>

@@ -52,10 +52,10 @@
                             </option>
 
                             <option
-                                value="peserta"
-                                @selected($selectedRole === 'peserta')
+                                value="promotor"
+                                @selected($selectedRole === 'promotor')
                             >
-                                Peserta
+                                Promotor
                             </option>
 
                         </select>
@@ -145,7 +145,7 @@
                                         @else
 
                                             <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                                                Peserta
+                                                Promotor
                                             </span>
 
                                         @endif
@@ -193,10 +193,10 @@
                                                     </option>
 
                                                     <option
-                                                        value="peserta"
-                                                        @selected($user->role->value === 'peserta')
+                                                        value="promotor"
+                                                        @selected($user->role->value === 'promotor')
                                                     >
-                                                        Peserta
+                                                        Promotor
                                                     </option>
 
                                                 </select>

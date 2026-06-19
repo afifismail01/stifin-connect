@@ -15,7 +15,7 @@ class NetworkReportController extends Controller
 
         $user->loadCount([
             'directMitras',
-            'directPesertas'
+            'directPromotors'
         ]);
 
         return view(
