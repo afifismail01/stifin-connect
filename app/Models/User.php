@@ -15,18 +15,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'referral_code',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'role', 'referral_code'];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
@@ -45,16 +36,17 @@ class User extends Authenticatable
 
     public function trainingRegistrations(): HasMany
     {
-        return $this->hasMany(
-            TrainingRegistration::class
-        );
+        return $this->hasMany(TrainingRegistration::class);
     }
 
     public function points(): HasMany
     {
-        return $this->hasMany(
-            Point::class
-        );
+        return $this->hasMany(Point::class);
+    }
+
+    public function voucherTransactions()
+    {
+        return $this->hasMany(VoucherTransaction::class);
     }
 
     /**
@@ -62,10 +54,7 @@ class User extends Authenticatable
      */
     public function downlines(): HasMany
     {
-        return $this->hasMany(
-            Referral::class,
-            'referrer_id'
-        );
+        return $this->hasMany(Referral::class, 'referrer_id');
     }
 
     /**
@@ -73,10 +62,7 @@ class User extends Authenticatable
      */
     public function upline(): HasOne
     {
-        return $this->hasOne(
-            Referral::class,
-            'referred_id'
-        );
+        return $this->hasOne(Referral::class, 'referred_id');
     }
 
     /*
@@ -126,14 +112,7 @@ class User extends Authenticatable
      */
     public function directMitras()
     {
-        return $this->downlines()
-            ->whereHas(
-                'referred',
-                fn ($q) => $q->where(
-                    'role',
-                    UserRoleEnum::MITRA
-                )
-            );
+        return $this->downlines()->whereHas('referred', fn($q) => $q->where('role', UserRoleEnum::MITRA));
     }
 
     /**
@@ -141,14 +120,7 @@ class User extends Authenticatable
      */
     public function directPesertas()
     {
-        return $this->downlines()
-            ->whereHas(
-                'referred',
-                fn ($q) => $q->where(
-                    'role',
-                    UserRoleEnum::PESERTA
-                )
-            );
+        return $this->downlines()->whereHas('referred', fn($q) => $q->where('role', UserRoleEnum::PESERTA));
     }
 
     /**
@@ -156,9 +128,7 @@ class User extends Authenticatable
      */
     public function referrerUser(): ?User
     {
-        return $this->upline()
-            ->with('referrer')
-            ->first()?->referrer;
+        return $this->upline()->with('referrer')->first()?->referrer;
     }
 
     /**
@@ -166,8 +136,7 @@ class User extends Authenticatable
      */
     public function referredUsers()
     {
-        return $this->downlines()
-            ->with('referred');
+        return $this->downlines()->with('referred');
     }
 
     /*
@@ -179,15 +148,8 @@ class User extends Authenticatable
     public static function generateReferralCode(): string
     {
         do {
-            $code = 'STF-' . strtoupper(
-                Str::random(6)
-            );
-        } while (
-            self::where(
-                'referral_code',
-                $code
-            )->exists()
-        );
+            $code = 'STF-' . strtoupper(Str::random(6));
+        } while (self::where('referral_code', $code)->exists());
 
         return $code;
     }
@@ -197,10 +159,9 @@ class User extends Authenticatable
         $count = 0;
 
         foreach ($this->downlines as $referral) {
-
             $downline = $referral->referred;
 
-            if (! $downline) {
+            if (!$downline) {
                 continue;
             }
 
@@ -219,7 +180,6 @@ class User extends Authenticatable
         $tree = [];
 
         foreach ($this->downlines as $referral) {
-
             $downline = $referral->referred;
 
             if (!$downline) {
@@ -229,7 +189,6 @@ class User extends Authenticatable
             $children = [];
 
             foreach ($downline->downlines as $childReferral) {
-
                 if ($childReferral->referred) {
                     $children[] = $childReferral->referred;
                 }
