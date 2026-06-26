@@ -45,12 +45,12 @@ class RegisteredUserController extends Controller
             'referrer_code' => ['nullable', 'exists:users,referral_code'],
         ]);
 
-        // Buat user baru sebagai peserta
+        // Buat user baru sebagai promotor
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => UserRoleEnum::PESERTA,
+            'role' => UserRoleEnum::PROMOTOR,
             'referral_code' => User::generateReferralCode(),
         ]);
 
@@ -64,56 +64,6 @@ class RegisteredUserController extends Controller
                     'referrer_id' => $upline->id,
                     'referred_id' => $user->id,
                 ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | SISTEM POIN
-                |--------------------------------------------------------------------------
-                |
-                | ADMIN -> PESERTA = 1 poin
-                |
-                | MITRA -> PESERTA
-                | MITRA dapat 0.5 poin
-                | ADMIN upline dapat 0.5 poin
-                |
-                */
-
-                // ADMIN merekrut peserta langsung
-                if ($upline->role === UserRoleEnum::ADMIN) {
-                    Point::create([
-                        'user_id' => $upline->id,
-                        'source_user_id' => $user->id,
-                        'points' => 1,
-                        'description' => 'Referral peserta langsung',
-                    ]);
-                }
-
-                // MITRA merekrut peserta
-                elseif ($upline->role === UserRoleEnum::MITRA) {
-                    // Mitra dapat 0.5
-                    Point::create([
-                        'user_id' => $upline->id,
-                        'source_user_id' => $user->id,
-                        'points' => 0.5,
-                        'description' => 'Referral peserta oleh mitra',
-                    ]);
-
-                    // Cari admin yang merekrut mitra tersebut
-                    $adminReferral = $upline->upline;
-
-                    if ($adminReferral) {
-                        $admin = User::find($adminReferral->referrer_id);
-
-                        if ($admin && $admin->role === UserRoleEnum::ADMIN) {
-                            Point::create([
-                                'user_id' => $admin->id,
-                                'source_user_id' => $user->id,
-                                'points' => 0.5,
-                                'description' => 'Bonus referral dari mitra',
-                            ]);
-                        }
-                    }
-                }
             }
         }
 

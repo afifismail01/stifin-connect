@@ -86,9 +86,9 @@ class User extends Authenticatable
         return $this->role === UserRoleEnum::MITRA;
     }
 
-    public function isPeserta(): bool
+    public function isPromotor(): bool
     {
-        return $this->role === UserRoleEnum::PESERTA;
+        return $this->role === UserRoleEnum::PROMOTOR;
     }
 
     /*
@@ -116,11 +116,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Peserta langsung milik Admin
+     * Promotor langsung milik Admin
      */
-    public function directPesertas()
+    public function directPromotors()
     {
-        return $this->downlines()->whereHas('referred', fn($q) => $q->where('role', UserRoleEnum::PESERTA));
+        return $this->downlines()
+            ->whereHas(
+                'referred',
+                fn ($q) => $q->where(
+                    'role',
+                    UserRoleEnum::PROMOTOR
+                )
+            );
     }
 
     /**
@@ -156,23 +163,7 @@ class User extends Authenticatable
 
     public function totalNetworkCount(): int
     {
-        $count = 0;
-
-        foreach ($this->downlines as $referral) {
-            $downline = $referral->referred;
-
-            if (!$downline) {
-                continue;
-            }
-
-            $count++;
-
-            if ($downline->isMitra()) {
-                $count += $downline->downlines()->count();
-            }
-        }
-
-        return $count;
+         return $this->downlines()->count();
     }
 
     public function networkTree(): array

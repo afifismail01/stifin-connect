@@ -150,7 +150,7 @@
                                 </th>
 
                                 <th class="border p-3 text-left">
-                                    Dari Peserta
+                                    Dari Promotor
                                 </th>
 
                                 <th class="border p-3 text-left">

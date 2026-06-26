@@ -32,7 +32,7 @@ class UserFactory extends Factory
         'password' => static::$password ??= Hash::make('password'),
         'remember_token' => Str::random(10),
 
-        'role' => UserRoleEnum::PESERTA->value,
+        'role' => UserRoleEnum::PROMOTOR->value,
         'referral_code' => 'STF-' . strtoupper(Str::random(6)),
     ];
     }

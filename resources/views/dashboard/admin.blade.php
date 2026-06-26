@@ -41,9 +41,9 @@
                 </div>
 
                 <div class="bg-white shadow rounded-xl p-6 border-l-4 border-green-500">
-                    <p class="text-gray-500 text-sm">Total Peserta</p>
+                    <p class="text-gray-500 text-sm">Total Promotor</p>
                     <h3 class="text-3xl font-bold text-green-600 mt-2">
-                        {{ $totalPeserta }}
+                        {{ $totalPromotor }}
                     </h3>
                 </div>
 
@@ -121,16 +121,16 @@
 
             </div>
 
-            {{-- Daftar Peserta --}}
+            {{-- Daftar Promotor --}}
             <div class="bg-white shadow rounded-xl p-6 mb-6">
 
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold">
-                        Daftar Peserta
+                        Daftar Promotor
                     </h3>
 
                     <span class="text-sm text-gray-500">
-                        Total: {{ $pesertas->count() }}
+                        Total: {{ $promotors->count() }}
                     </span>
                 </div>
 
@@ -146,24 +146,24 @@
                         </thead>
 
                         <tbody>
-                            @forelse($pesertas as $peserta)
+                            @forelse($promotors as $promotor)
                                 <tr class="hover:bg-gray-50">
                                     <td class="p-3 border">
-                                        {{ $peserta->name }}
+                                        {{ $promotor->name }}
                                     </td>
 
                                     <td class="p-3 border">
-                                        {{ $peserta->email }}
+                                        {{ $promotor->email }}
                                     </td>
 
                                     <td class="p-3 border font-mono">
-                                        {{ $peserta->referral_code }}
+                                        {{ $promotor->referral_code }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="3" class="p-4 border text-center text-gray-500">
-                                        Belum ada data peserta
+                                        Belum ada data promotor
                                     </td>
                                 </tr>
                             @endforelse
