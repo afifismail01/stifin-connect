@@ -44,13 +44,6 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    public function trainingRegistrations(): HasMany
-    {
-        return $this->hasMany(
-            TrainingRegistration::class
-        );
-    }
-
     public function points(): HasMany
     {
         return $this->hasMany(
