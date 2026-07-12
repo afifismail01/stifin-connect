@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Bonus;
 
 class User extends Authenticatable
 {
@@ -195,6 +196,11 @@ class User extends Authenticatable
     public function totalNetworkCount(): int
     {
          return $this->downlines()->count();
+    }
+
+    public function bonuses(): HasMany
+    {
+        return $this->hasMany(Bonus::class);
     }
 
     public function networkTree(): array

@@ -37,7 +37,7 @@ class DashboardController extends Controller
 
                 'totalPromotor' => User::where('role', UserRoleEnum::PROMOTOR)->count(),
 
-                'totalReferral' => Referral::count(),
+                'totalReferral' => $user->downlines()->count(),
 
                 'totalPoint' => Point::sum('points'),
 
